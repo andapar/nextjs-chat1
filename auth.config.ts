@@ -1,7 +1,7 @@
 import GoogleProvider from 'next-auth/providers/google';
 import { NextAuthConfig } from 'next-auth';
 
-export const authConfig = {
+export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET,
   pages: {
     signIn: '/login',
@@ -61,4 +61,4 @@ export const authConfig = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     })
   ],
-} satisfies NextAuthConfig;
+};
