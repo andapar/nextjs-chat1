@@ -1,6 +1,17 @@
 import GoogleProvider from 'next-auth/providers/google';
 import { NextAuthConfig } from 'next-auth';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+async function fetchJsonData() {
+  const res = await fetch(`${API_URL}/api/read-json`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch JSON data');
+  }
+  const data = await res.json();
+  return data;
+}
+
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET,
   pages: {
