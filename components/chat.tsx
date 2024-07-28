@@ -82,3 +82,4 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
     </div>
   )
 }
+
