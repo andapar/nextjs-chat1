@@ -5,10 +5,12 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { IconSpinner } from './ui/icons';
+import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] =useState<string | null>(null);
+  const router = useRouter();
 
   const handleSignIn = async () => {
     setLoading(true);
@@ -20,6 +22,7 @@ export default function SignupForm() {
         toast.error("Kayıt başarısız.");
       } else {
         toast.success("Kayıt başarılı! Lütfen e-postanızı kontrol edin ve hesabınızı onaylayın.");
+        router.refresh();
       }
     } catch (err) {
       setError("Bir hata oluştu.");
