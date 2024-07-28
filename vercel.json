@@ -1,6 +1,7 @@
 {
-  "crons": [{
-    "path": "/api/check-sessions",
-    "schedule": "0 0 * * *"  // Her gün saat 00:00'da çalışacak
-  }]
+  "build": {
+    "env": {
+      "NODE_VERSION": "14.x"
+    }
+  }
 }
