@@ -42,11 +42,11 @@ export const authConfig: NextAuthConfig = {
       if (account?.provider === 'google') {
         const { allowedEmails, blacklist } = await fetchJsonData();
 
-        if (!allowedEmails.includes(token.email)) {
+        if (!allowedEmails.includes(token.email as string)) {
           throw new Error('Bu e-posta adresi kayıt için izinli değil.');
         }
 
-        if (blacklist.includes(token.email)) {
+        if (blacklist.includes(token.email as string)) {
           throw new Error('Bu kullanıcı oturum açamaz.');
         }
       }
@@ -55,16 +55,15 @@ export const authConfig: NextAuthConfig = {
     },
     async session({ session, token }) {
       // session.user'in tanımlı olup olmadığını kontrol edin
-      if (session.user) {
-        session.user.id = token.id;
-        session.user.email = token.email;
-      } else {
-        session.user = { id: token.id, email: token.email, name: '', image: '' };
+      if (!session.user) {
+        session.user = {}; // Eğer session.user tanımlı değilse, yeni bir nesne oluşturun
       }
+      session.user.id = token.id as string;
+      session.user.email = token.email as string;
 
       // Kara listede olan kullanıcıları kontrol edin ve oturumu geçersiz kılın
       const { blacklist } = await fetchJsonData();
-      if (blacklist.includes(token.email)) {
+      if (blacklist.includes(token.email as string)) {
         session.user = { id: '', name: '', email: '', image: '' };
       }
 
