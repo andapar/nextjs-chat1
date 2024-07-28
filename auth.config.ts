@@ -56,7 +56,7 @@ export const authConfig: NextAuthConfig = {
     async session({ session, token }) {
       // session.user'in tanımlı olup olmadığını kontrol edin
       if (!session.user) {
-        session.user = {}; // Eğer session.user tanımlı değilse, yeni bir nesne oluşturun
+        session.user = { id: '', email: '', name: '', image: '' }; // Gerekli alanları içeren yeni bir nesne oluşturun
       }
       session.user.id = token.id as string;
       session.user.email = token.email as string;
