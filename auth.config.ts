@@ -54,8 +54,13 @@ export const authConfig: NextAuthConfig = {
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.email = token.email;
+      // session.user'in tanımlı olup olmadığını kontrol edin
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.email = token.email;
+      } else {
+        session.user = { id: token.id, email: token.email, name: '', image: '' };
+      }
 
       // Kara listede olan kullanıcıları kontrol edin ve oturumu geçersiz kılın
       const { blacklist } = await fetchJsonData();
