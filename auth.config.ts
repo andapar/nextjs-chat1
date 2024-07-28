@@ -1,4 +1,5 @@
-import type { NextAuthConfig } from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google';
+import { NextAuthConfig } from 'next-auth';
 
 export const authConfig = {
   secret: process.env.AUTH_SECRET,
@@ -8,35 +9,56 @@ export const authConfig = {
   },
   callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user
-      const isOnLoginPage = nextUrl.pathname.startsWith('/login')
-      const isOnSignupPage = nextUrl.pathname.startsWith('/signup')
+      const isLoggedIn = !!auth?.user;
+      const isOnLoginPage = nextUrl.pathname.startsWith('/login');
+      const isOnSignupPage = nextUrl.pathname.startsWith('/signup');
 
       if (isLoggedIn) {
         if (isOnLoginPage || isOnSignupPage) {
-          return Response.redirect(new URL('/', nextUrl))
+          return Response.redirect(new URL('/', nextUrl));
         }
       }
 
-      return true
+      return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token = { ...token, id: user.id }
+        token.id = user.id;
+        token.email = user.email;
       }
 
-      return token
+      // Google ile giriş yapıldıysa, `allowedEmails.json` ve `sessionBlacklist.json` kontrollerini yapın
+      if (account?.provider === 'google') {
+        const { allowedEmails, blacklist } = await fetchJsonData();
+
+        if (!allowedEmails.includes(token.email)) {
+          throw new Error('Bu e-posta adresi kayıt için izinli değil.');
+        }
+
+        if (blacklist.includes(token.email)) {
+          throw new Error('Bu kullanıcı oturum açamaz.');
+        }
+      }
+
+      return token;
     },
     async session({ session, token }) {
-      if (token) {
-        const { id } = token as { id: string }
-        const { user } = session
+      session.user.id = token.id;
+      session.user.email = token.email;
 
-        session = { ...session, user: { ...user, id } }
+      // Kara listede olan kullanıcıları kontrol edin ve oturumu geçersiz kılın
+      const { blacklist } = await fetchJsonData();
+      if (blacklist.includes(token.email)) {
+        session.user = { id: '', name: '', email: '', image: '' };
       }
 
-      return session
+      return session;
     }
   },
-  providers: []
-} satisfies NextAuthConfig
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    })
+  ],
+} satisfies NextAuthConfig;
