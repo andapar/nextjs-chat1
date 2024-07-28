@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] =useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignIn = async () => {
