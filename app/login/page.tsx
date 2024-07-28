@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import LoginForm from '@/components/login-form'
+import { signIn } from 'next-auth/react'
 import { Session } from '@/lib/types'
 import { redirect } from 'next/navigation'
 
@@ -12,7 +12,9 @@ export default async function LoginPage() {
 
   return (
     <main className="flex flex-col p-4">
-      <LoginForm />
+      <button onClick={() => signIn('google')}>
+        Google ile Giriş Yap
+      </button>
     </main>
   )
 }
