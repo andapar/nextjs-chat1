@@ -1,3 +1,5 @@
+"use client"
+
 import { auth } from '@/auth'
 import { signIn } from 'next-auth/react'
 import { Session } from '@/lib/types'
