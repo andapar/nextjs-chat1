@@ -1,15 +1,14 @@
-"use client"
+'use client';
 
-import { auth } from '@/auth'
-import { signIn } from 'next-auth/react'
-import { Session } from '@/lib/types'
-import { redirect } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { getSession } from '@/auth'; // getSession fonksiyonunu import edin
 
 export default async function LoginPage() {
-  const session = (await auth()) as Session
+  const session = await getSession();
 
   if (session) {
-    redirect('/')
+    redirect('/');
   }
 
   return (
@@ -18,5 +17,5 @@ export default async function LoginPage() {
         Google ile Giriş Yap
       </button>
     </main>
-  )
+  );
 }
